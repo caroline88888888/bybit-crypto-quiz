@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Crypto Path — Bybit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#FF9C2E;--orange-dark:#E08518;--orange-light:rgba(255,156,46,.12);--orange-faint:rgba(255,156,46,.06);
+  --black:#000;--white:#fff;
+  --g50:#F8F9FA;--g100:#F0F0F0;--g200:#E0E0E0;--g400:#AAAAAA;--g600:#666;--g800:#222;
+  --radius-pill:100px;--radius-card:14px;--radius-option:12px;
+  --ease:cubic-bezier(.4,0,.2,1);--ease-out:cubic-bezier(0,0,.2,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:var(--black);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.brand-rule{height:3px;background:linear-gradient(90deg,var(--orange) 0%,#FFB84E 100%);width:100%}
+.header{padding:16px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid var(--g200);position:sticky;top:0;background:var(--white);z-index:20}
+.logo{font-size:17px;font-weight:800;letter-spacing:2px;color:var(--black);user-select:none}
+.logo span{color:var(--orange)}
+.header-tag{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400)}
+.main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:52px 24px 120px}
+.container{width:100%;max-width:640px}
+.screen{display:none}
+.screen.active{display:block}
+.screen.anim-fade{animation:fadeUp .35s var(--ease-out) both}
+.screen.anim-slide-right{animation:slideRight .22s var(--ease-out) both}
+.screen.anim-slide-left{animation:slideLeft .22s var(--ease-out) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:translateX(0)}}
+.intro-eyebrow{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--orange);margin-bottom:18px}
+.intro-title{font-size:50px;font-weight:800;line-height:1.04;color:var(--black);margin-bottom:20px}
+.intro-title span{display:block;color:var(--orange)}
+.intro-body{font-size:16px;color:var(--g600);line-height:1.7;max-width:480px;margin-bottom:36px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:44px}
+.stat-card{background:var(--g50);border:1.5px solid var(--g200);border-radius:12px;padding:16px 12px;text-align:center;transition:border-color .2s}
+.stat-card:hover{border-color:var(--orange)}
+.stat-num{font-size:28px;font-weight:800;color:var(--orange);line-height:1;margin-bottom:4px}
+.stat-lbl{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--g400)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-size:15px;font-weight:700;padding:14px 30px;border-radius:var(--radius-pill);border:none;cursor:pointer;transition:background .15s,border-color .15s,transform .1s,opacity .15s;white-space:nowrap;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:var(--orange);color:var(--black)}
+.btn-primary:hover{background:var(--orange-dark)}
+.btn-primary:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;transform:none}
+.btn-outline{background:transparent;color:var(--orange);border:2px solid var(--orange)}
+.btn-outline:hover{background:var(--orange-faint)}
+.btn-ghost{background:transparent;color:var(--g400);border:none;padding:14px 10px;font-size:14px;font-weight:600}
+.btn-ghost:hover{color:var(--g800)}
+.btn-sm{font-size:13px;padding:10px 22px}
+.progress-area{margin-bottom:40px}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.progress-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400)}
+.progress-frac{font-size:12px;font-weight:700;color:var(--orange)}
+.step-dots{display:flex;gap:5px;align-items:center}
+.step-dot{height:4px;border-radius:2px;transition:width .4s var(--ease),background .2s,opacity .2s;flex-shrink:0}
+.step-dot.done{width:16px;background:var(--orange);opacity:.45}
+.step-dot.active{width:32px;background:var(--orange);opacity:1}
+.step-dot.pending{width:16px;background:var(--g200)}
+.q-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.q-num{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--orange)}
+.q-sep{width:1px;height:11px;background:var(--g200)}
+.q-cat{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400)}
+.q-text{font-size:22px;font-weight:700;color:var(--black);line-height:1.3;margin-bottom:26px}
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:32px}
+.option{display:flex;align-items:center;gap:14px;padding:18px 20px;border:1.5px solid var(--g200);border-radius:var(--radius-option);cursor:pointer;background:var(--white);transition:border-color .15s,background .15s,transform .12s;user-select:none}
+.option:hover{border-color:var(--orange);background:var(--orange-faint);transform:translateX(3px)}
+.option.selected{border-color:var(--orange);background:var(--orange-light);transform:translateX(3px)}
+.option-badge{width:30px;height:30px;border-radius:50%;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--g600);flex-shrink:0;transition:background .15s,color .15s}
+.option.selected .option-badge{background:var(--orange);color:var(--black)}
+.option-label{font-size:15px;font-weight:500;color:var(--g800);line-height:1.5;flex:1}
+.option.selected .option-label{font-weight:600;color:var(--black)}
+.option-check{margin-left:auto;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--g200);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s}
+.option-check svg{opacity:0;transition:opacity .15s}
+.option.selected .option-check{border-color:var(--orange);background:var(--orange)}
+.option.selected .option-check svg{opacity:1}
+.nav-row{display:flex;justify-content:space-between;align-items:center;padding-top:4px}
+.sticky-nav{display:none}
+@media(max-width:560px){
+  .sticky-nav{display:block;position:fixed;bottom:0;left:0;right:0;padding:10px 20px 24px;background:linear-gradient(to top,var(--white) 70%,transparent);z-index:30}
+  .sticky-nav-inner{display:flex;gap:10px}
+  .nav-row{display:none}
+}
+.result-hero{display:flex;align-items:flex-start;gap:22px;margin-bottom:28px}
+.result-icon-wrap{width:80px;height:80px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden}
+.result-icon svg{display:block}
+.result-icon-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent)}
+.result-hero-text{flex:1}
+.result-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.result-name{font-size:52px;font-weight:800;line-height:1;margin-bottom:10px}
+.result-tagline{font-size:17px;font-weight:700;color:var(--black);margin-bottom:6px}
+.result-desc{font-size:14px;color:var(--g600);line-height:1.65}
+.section-divider{height:1px;background:var(--g100);margin:24px 0}
+.result-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:28px}
+.result-card{background:var(--g50);border-radius:var(--radius-card);padding:18px 16px;border:1px solid var(--g100)}
+.card-heading{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:13px}
+.card-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.card-list li{display:flex;align-items:flex-start;gap:7px;font-size:12px;font-weight:500;color:var(--g800);line-height:1.45}
+.card-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.card-list a{color:inherit;text-decoration:none;border-bottom:1px dashed var(--g200);transition:color .15s,border-color .15s}
+.card-list a:hover{color:var(--orange);border-color:var(--orange)}
+.result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px}
+.download-section{background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--radius-card);padding:24px;margin-top:4px}
+.download-title{font-size:16px;font-weight:700;color:var(--black);margin-bottom:6px}
+.download-body{font-size:13px;color:var(--g600);margin-bottom:18px;line-height:1.55}
+.download-row{display:flex;gap:10px;flex-wrap:wrap}
+.download-input{flex:1;min-width:180px;padding:12px 18px;border:1.5px solid var(--g200);border-radius:var(--radius-pill);font-family:inherit;font-size:14px;font-weight:500;color:var(--black);background:var(--white);outline:none;transition:border-color .15s}
+.download-input:focus{border-color:var(--orange)}
+.download-input::placeholder{color:var(--g400)}
+.footer{text-align:center;padding:20px 24px;font-size:11px;color:var(--g400);border-top:1px solid var(--g100);line-height:1.6}
+#print-area{display:none}
+@page{size:A4;margin:0}
+@media print{
+  body>*:not(#print-area){display:none!important}
+  #print-area{display:block!important;padding:48px 56px 40px;font-family:'Inter',sans-serif;color:#000;min-height:100vh;box-sizing:border-box;display:flex!important;flex-direction:column}
+  .print-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:16px;border-bottom:3px solid #FF9C2E}
+  .print-logo{font-size:20px;font-weight:800;letter-spacing:2px}
+  .print-logo span{color:#FF9C2E}
+  .print-date{font-size:12px;color:#666}
+  .print-hero{margin-bottom:28px}
+  .print-profile-name{font-size:40px;font-weight:800;margin-bottom:6px}
+  .print-tagline{font-size:18px;font-weight:700;margin-bottom:8px}
+  .print-desc{font-size:14px;color:#444;line-height:1.65;max-width:560px}
+  .print-section{margin-bottom:24px}
+  .print-section-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #eee}
+  .print-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .print-list li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#222;line-height:1.45}
+  .print-dot{width:5px;height:5px;border-radius:50%;background:#FF9C2E;flex-shrink:0;margin-top:5px}
+  .print-footer{display:block;margin-top:auto;padding-top:24px;border-top:1px solid #eee;font-size:10px;color:#999;line-height:1.6}
+}
+@media(max-width:560px){
+  .intro-title{font-size:36px}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .result-grid{grid-template-columns:1fr}
+  .result-name{font-size:38px}
+  .result-hero{flex-direction:column;gap:14px}
+  .header{padding:14px 20px}
+  .main{padding:36px 16px 120px}
+}
+</style>
+</head>
+<body>
+
+<div class="brand-rule"></div>
+<header class="header">
+  <div class="logo">BYB<span>I</span>T</div>
+  <span class="header-tag">Crypto Profile Quiz</span>
+</header>
+
+<main class="main">
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="screen active anim-fade" id="screen-intro">
+    <p class="intro-eyebrow">Find Your Edge</p>
+    <h1 class="intro-title">Find Your<span>Crypto Path</span></h1>
+    <p class="intro-body">Crypto isn't one-size-fits-all. Whether you're just getting started or ready to go deeper — 5 quick questions will map your profile, highlight your blind spots, and point you to the tools built exactly for how you operate.</p>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num">5</div><div class="stat-lbl">Questions</div></div>
+      <div class="stat-card"><div class="stat-num">2<span style="font-size:16px;font-weight:600">min</span></div><div class="stat-lbl">Duration</div></div>
+      <div class="stat-card"><div class="stat-num">8</div><div class="stat-lbl">Profiles</div></div>
+      <div class="stat-card"><div class="stat-num">∞</div><div class="stat-lbl">Paths</div></div>
+    </div>
+    <button class="btn btn-primary" onclick="startQuiz()">Start the Quiz &nbsp;→</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-area">
+      <div class="progress-top">
+        <span class="progress-label">Progress</span>
+        <span class="progress-frac" id="progress-frac">1 / 5</span>
+      </div>
+      <div class="step-dots" id="step-dots"></div>
+    </div>
+    <div id="q-content">
+      <div class="q-meta">
+        <span class="q-num" id="q-num">Question 01</span>
+        <span class="q-sep"></span>
+        <span class="q-cat" id="q-cat"></span>
+      </div>
+      <h2 class="q-text" id="q-text"></h2>
+      <div class="options" id="options"></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-ghost" id="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn btn-primary" id="btn-next" onclick="goNext()" disabled>Next →</button>
+    </div>
+  </div>
+
+  <div class="sticky-nav" id="sticky-nav">
+    <div class="sticky-nav-inner">
+      <button class="btn btn-ghost" id="btn-back-m" onclick="goBack()">←</button>
+      <button class="btn btn-primary" id="btn-next-m" onclick="goNext()" disabled style="flex:1">Next →</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="screen-result">
+    <div class="result-hero">
+      <div class="result-icon-wrap" id="result-icon-wrap"><div id="result-icon"></div></div>
+      <div class="result-hero-text">
+        <div class="result-badge" id="result-badge">✦ Your Path</div>
+        <div class="result-name" id="result-name">Pathfinder</div>
+        <p class="result-tagline" id="result-tagline"></p>
+        <p class="result-desc" id="result-desc"></p>
+      </div>
+    </div>
+    <div class="section-divider"></div>
+    <div class="result-grid" id="result-grid"></div>
+    <div class="result-actions">
+      <button class="btn btn-outline btn-sm" onclick="retake()">← Retake Quiz</button>
+      <a class="btn btn-primary btn-sm" id="btn-cta" href="#" target="_blank" rel="noopener">Start on Bybit →</a>
+    </div>
+    <div class="download-section">
+      <div class="download-title">Download Your Learning Path</div>
+      <p class="download-body">Enter your first name to personalise your PDF — your crypto profile, learning roadmap, and recommended products, ready to save.</p>
+      <div class="download-row">
+        <input class="download-input" type="text" id="pdf-name" placeholder="Your first name">
+        <button class="btn btn-primary btn-sm" onclick="downloadPDF()">Download PDF</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</main>
+
+<div id="print-area">
+  <div class="print-header">
+    <div class="print-logo">BYB<span>I</span>T</div>
+    <div class="print-date" id="print-date"></div>
+  </div>
+  <div class="print-hero">
+    <div id="print-greeting" style="font-size:15px;color:#666;margin-bottom:6px"></div>
+    <div class="print-profile-name" id="print-profile-name"></div>
+    <div class="print-tagline" id="print-tagline"></div>
+    <p class="print-desc" id="print-desc"></p>
+  </div>
+  <div class="print-section">
+    <div class="print-section-title">Your Learning Roadmap</div>
+    <ul class="print-list" id="print-learn"></ul>
+  </div>
+  <div class="print-section">
+    <div class="print-section-title">Products Built for You</div>
+    <ul class="print-list" id="print-products"></ul>
+  </div>
+  <div class="print-section">
+    <div class="print-section-title">Mistakes to Avoid</div>
+    <ul class="print-list" id="print-mistakes"></ul>
+  </div>
+  <div class="print-footer">This quiz is for informational purposes only and does not constitute financial advice. Results reflect your stated preferences, not a guarantee of outcomes. Cryptocurrency trading involves significant risk and may not be suitable for all investors. bybit.com</div>
+</div>
+
+<footer class="footer">
+  © 2025 Bybit · This quiz is for informational purposes only and does not constitute financial advice. Results reflect your stated preferences, not a guarantee of outcomes.
+</footer>
+
+<script>
+/* ── ICONS ── */
+const ICONS = {
+  A:`<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v1m0 6v1m-5-4h1m6 0h1"/><circle cx="12" cy="12" r="2.5"/></svg>`,
+  B:`<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20h14"/><path d="M6 20v-4h3v4"/><path d="M10.5 20v-9h3v9"/><path d="M15 20v-14h3v14"/></svg>`,
+  C:`<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg>`,
+  D:`<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>`,
+  E:`<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="6" height="4" rx="1"/><rect x="16" y="3" width="6" height="4" rx="1"/><rect x="9" y="17" width="6" height="4" rx="1"/><path d="M5 7v4h14V7"/><path d="M12 11v6"/></svg>`,
+  F:`<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>`,
+  G:`<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l10 10-10 10L2 12 12 2z"/></svg>`,
+  H:`<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`
+};
+
+/* ── DATA ── */
+const GATEWAY = {
+  category: "Start",
+  text: "Where are you in your crypto journey?",
+  options: [
+    { text: "I'm still finding my feet", track: 1 },
+    { text: "I know the basics and I'm building", track: 2 },
+    { text: "I'm actively trading", track: 3 },
+    { text: "I'm going deeper — yield, hedging, or early-stage", track: 4 }
+  ]
+};
+
+const TRACK_QUESTIONS = {
+  1: [
+    { category: "Motivation", text: "What brought you to crypto?", options: [
+      { text: "I want to understand what it is and how it works before I do anything", profile: "A" },
+      { text: "I want to start building a position in the market", profile: "B" }
+    ]},
+    { category: "Concern", text: "What's your biggest concern right now?", options: [
+      { text: "Making a mistake because I don't fully understand yet", profile: "A" },
+      { text: "Being too slow to build meaningful exposure", profile: "B" }
+    ]},
+    { category: "Approach", text: "How do you prefer to get started?", options: [
+      { text: "I want clear guidance before I take any action", profile: "A" },
+      { text: "I learn by doing — I'm ready to start making small moves", profile: "B" }
+    ]},
+    { category: "Success", text: "What does success look like for you?", options: [
+      { text: "Feeling confident and in control of my own decisions", profile: "A" },
+      { text: "A portfolio I understand and can add to steadily over time", profile: "B" }
+    ]}
+  ],
+  2: [
+    { category: "Holdings", text: "What do you do with crypto you're not actively trading?", options: [
+      { text: "Hold it — long-term accumulation is the strategy", profile: "B" },
+      { text: "Look for ways to make it earn while I hold", profile: "D" }
+    ]},
+    { category: "Returns", text: "How do you think about returns?", options: [
+      { text: "Steady growth over time through disciplined accumulation", profile: "B" },
+      { text: "Maximising what every unit of capital is doing at any given moment", profile: "D" }
+    ]},
+    { category: "Frustration", text: "What would frustrate you most?", options: [
+      { text: "Making emotional decisions that hurt my long-term strategy", profile: "B" },
+      { text: "Leaving capital idle when it could be earning yield", profile: "D" }
+    ]},
+    { category: "Success", text: "What does success look like for you?", options: [
+      { text: "A diversified portfolio that compounds steadily over years", profile: "B" },
+      { text: "Generating meaningful passive income from my existing holdings", profile: "D" }
+    ]}
+  ],
+  3: [
+    { category: "Decisions", text: "How do you make trading decisions?", options: [
+      { text: "I read the market, watch charts, and act on signals I identify", profile: "C" },
+      { text: "I build systems and automate as much of my strategy as possible", profile: "E" }
+    ]},
+    { category: "Tools", text: "What matters most in your trading setup?", options: [
+      { text: "Fast execution, clean charting, and reliable order types", profile: "C" },
+      { text: "APIs, bots, advanced order controls, and low-latency infrastructure", profile: "E" }
+    ]},
+    { category: "Frustration", text: "What would frustrate you most?", options: [
+      { text: "Missing an opportunity because I couldn't act quickly enough", profile: "C" },
+      { text: "Not having the infrastructure to execute at the level I operate", profile: "E" }
+    ]},
+    { category: "Success", text: "What does success look like for you?", options: [
+      { text: "Consistent, profitable trading performance over time", profile: "C" },
+      { text: "Operating with a precision and edge most retail traders never reach", profile: "E" }
+    ]}
+  ],
+  4: [
+    { category: "Drive", text: "What draws you to going deeper in crypto?", options: [
+      { text: "Finding asymmetric opportunities before they're mainstream", profile: "F" },
+      { text: "Building long-term wealth in assets I deeply believe in", profile: "G" },
+      { text: "Managing risk and protecting what I've already built", profile: "H" }
+    ]},
+    { category: "Risk", text: "How do you think about risk?", options: [
+      { text: "I accept higher risk for the chance of outsized returns", profile: "F" },
+      { text: "I minimise risk by holding strong assets and ignoring speculation", profile: "G" },
+      { text: "I prioritise protecting capital — downside comes before upside", profile: "H" }
+    ]},
+    { category: "Frustration", text: "What would frustrate you most?", options: [
+      { text: "Buying into something after it's already been priced in by everyone else", profile: "F" },
+      { text: "Being pressured to trade or react to short-term market noise", profile: "G" },
+      { text: "Taking a significant loss I could have avoided with proper hedging", profile: "H" }
+    ]},
+    { category: "Success", text: "What does success look like for you?", options: [
+      { text: "Being early to projects that define the next market cycle", profile: "F" },
+      { text: "Long-term wealth preservation with minimal active management", profile: "G" },
+      { text: "A portfolio that holds its value even in bear markets", profile: "H" }
+    ]}
+  ]
+};
+
+const TIEBREAKERS = { 1: "B", 2: "D", 3: "E", 4: "H" };
+
+const PROFILES = {
+  A: {
+    key:"Pathfinder", icon:"🧭", accent:"#00ADD8", accentBg:"rgba(0,173,216,.10)",
+    tagline:"You're in the right place at the right time.",
+    desc:"You're here to learn the basics, build confidence, and understand the space before making bigger decisions. That foundation is everything — and Bybit was built to help you build it.",
+    learn:[
+      {t:"Crypto fundamentals",u:"https://learn.bybit.com/crypto/what-is-cryptocurrency/"},
+      {t:"Market basics",u:"https://learn.bybit.com/investing/"},
+      {t:"Wallets vs exchange accounts",u:"https://learn.bybit.com/crypto/what-is-a-crypto-wallet/"},
+      {t:"Security & scam prevention",u:"https://learn.bybit.com/crypto/how-to-secure-your-crypto/"},
+      {t:"Understanding volatility",u:"https://learn.bybit.com/trading/what-is-volatility/"}
+    ],
+    mistakes:["Buying based on hype without research","Sending funds on the wrong network","Ignoring account security","Moving too fast into advanced products","Trusting unofficial links or impersonators"],
+    products:[
+      {t:"One-Click Buy",u:"https://www.bybit.com/en/buy-crypto/"},
+      {t:"Bybit Learn",u:"https://learn.bybit.com/"},
+      {t:"Demo Trading",u:"https://www.bybit.com/en/demo-trading/"},
+      {t:"Watchlist & Price Alerts",u:"https://www.bybit.com/en/trade/spot/BTCUSDT"},
+      {t:"Simple Earn",u:"https://www.bybit.com/en/earn/"}
+    ],
+    cta:"https://www.bybit.com/en/register/"
+  },
+  B: {
+    key:"Builder", icon:"🏗️", accent:"#3499FF", accentBg:"rgba(52,153,255,.10)",
+    tagline:"Steady hands build the biggest portfolios.",
+    desc:"You care about building exposure steadily rather than reacting to short-term noise. Consistency and a clear framework define how you operate — and compound interest rewards exactly that.",
+    learn:[
+      {t:"Portfolio construction",u:"https://learn.bybit.com/investing/how-to-build-a-crypto-portfolio/"},
+      {t:"DCA accumulation strategies",u:"https://learn.bybit.com/investing/what-is-dollar-cost-averaging/"},
+      {t:"Diversification principles",u:"https://learn.bybit.com/investing/"},
+      {t:"Market cycle awareness",u:"https://learn.bybit.com/investing/crypto-market-cycles/"},
+      {t:"Long-term risk management",u:"https://learn.bybit.com/trading/risk-management/"}
+    ],
+    mistakes:["Panic selling in volatility","Overconcentrating in one asset","Trying to time every move","Investing emotionally","Neglecting periodic portfolio review"],
+    products:[
+      {t:"Spot Trading",u:"https://www.bybit.com/en/markets/overview/"},
+      {t:"Recurring Buy",u:"https://www.bybit.com/en/fiat/trade/invest/home?type=1&target=BTC&source=USDT"},
+      {t:"Bybit Earn",u:"https://www.bybit.com/en/earn/"},
+      {t:"Portfolio Management",u:"https://learn.bybit.com/en/strategies/how-to-manage-a-crypto-portfolio"},
+      {t:"Staking",u:"https://www.bybit.com/en/earn/"}
+    ],
+    cta:"https://www.bybit.com/en/markets/overview/"
+  },
+  C: {
+    key:"Tactician", icon:"⚡", accent:"#FF3BD4", accentBg:"rgba(255,59,212,.10)",
+    tagline:"You're wired to find edges. Let's sharpen them.",
+    desc:"You prefer active participation in markets, hands-on decision making, and tools that help you execute quickly and with precision. Speed matters. So does having the right setup.",
+    learn:[
+      {t:"Technical analysis",u:"https://learn.bybit.com/trading/what-is-technical-analysis/"},
+      {t:"Market structure & order flow",u:"https://learn.bybit.com/en/article/43065"},
+      {t:"Entry & exit execution",u:"https://learn.bybit.com/en/article/52411"},
+      {t:"Liquidity & slippage",u:"https://learn.bybit.com/en/defi/what-is-slippage-in-crypto"},
+      {t:"Risk/reward & position sizing",u:"https://learn.bybit.com/en/trading/what-is-position-sizing"},
+      {t:"Trading psychology",u:"https://learn.bybit.com/en/article/46514"}
+    ],
+    mistakes:["Overtrading","Oversized positions","Chasing momentum without a plan","Revenge trading after losses","Confusing short-term luck with skill"],
+    products:[
+      {t:"Advanced Spot Trading",u:"https://www.bybit.com/en/trade/spot/BTCUSDT"},
+      {t:"Perpetuals",u:"https://www.bybit.com/en/trade/usdt/BTCUSDT"},
+      {t:"Copy Trading",u:"https://www.bybit.com/copyTrade/"},
+      {t:"Trading Bots",u:"https://www.bybit.com/en/tradingbot"},
+      {t:"Advanced Orders",u:"https://learn.bybit.com/en/article/31089"}
+    ],
+    cta:"https://www.bybit.com/en/markets/overview/"
+  },
+  D: {
+    key:"Optimizer", icon:"⚙️", accent:"#30A65F", accentBg:"rgba(48,166,95,.10)",
+    tagline:"Your capital should never sleep.",
+    desc:"You focus on making idle assets productive and maximising the return on every unit of capital you hold. There's always a yield somewhere — you just want to find the best one.",
+    learn:[
+      {t:"Staking mechanics",u:"https://learn.bybit.com/en/crypto/what-is-crypto-coins-staking"},
+      {t:"Earning strategies",u:"https://learn.bybit.com/en/article/49725"},
+      {t:"Lending protocols",u:"https://learn.bybit.com/en/article/33923"},
+      {t:"APY vs actual risk",u:"https://learn.bybit.com/en/article/45246"},
+      {t:"Lockup vs flexible tradeoffs",u:"https://learn.bybit.com/en/article/49729"},
+      {t:"Counterparty risk",u:"https://learn.bybit.com/en/article/17860"}
+    ],
+    mistakes:["Chasing unrealistic yields","Ignoring where returns come from","Underestimating liquidity constraints","Misunderstanding product terms","Treating yield as risk-free"],
+    products:[
+      {t:"Bybit Earn",u:"https://www.bybit.com/en/earn/"},
+      {t:"Easy Earn",u:"https://www.bybit.com/en/earn/easy-earn/?homeRef=1"},
+      {t:"Fixed Earn",u:"https://www.bybit.com/en/earn/easy-earn/?homeRef=1&tab=3"},
+      {t:"Staking",u:"https://www.bybit.com/en/earn/pos/?homeRef=1"},
+      {t:"Auto Earn",u:"https://learn.bybit.com/en/bybit-guide/what-is-bybit-auto-earn"}
+    ],
+    cta:"https://www.bybit.com/en/earn/"
+  },
+  E: {
+    key:"Architect", icon:"🔧", accent:"#C49B52", accentBg:"rgba(196,155,82,.10)",
+    tagline:"You don't need simple — you need powerful.",
+    desc:"You operate with precision and prefer systems, automation, and advanced tools over simplified workflows. Execution edge is your priority, and Bybit's infrastructure was built for people like you.",
+    learn:[
+      {t:"Derivatives mechanics",u:"https://learn.bybit.com/derivatives/"},
+      {t:"API trading integration",u:"https://learn.bybit.com/en/article/1467"},
+      {t:"Strategy automation",u:"https://learn.bybit.com/en/ai/best-ai-prompts-for-crypto-trading"},
+      {t:"Execution quality & latency",u:"https://learn.bybit.com/en/article/2504"},
+      {t:"Fee optimisation",u:"https://learn.bybit.com/en/bybit-guide/how-to-buy-crypto-on-bybit"},
+      {t:"Risk controls",u:"https://learn.bybit.com/en/article/14442"}
+    ],
+    mistakes:["Overusing leverage","Weak API security practices","Automating untested strategies","Ignoring liquidation risk","Optimising execution while neglecting risk"],
+    products:[
+      {t:"Derivatives Trading",u:"https://www.bybit.com/en/trade/usdt/BTCUSDT"},
+      {t:"API Trading",u:"https://www.bybit.com/en/help-center/article/Introduction-to-Trading-API"},
+      {t:"Trading Bots",u:"https://www.bybit.com/en/tradingbot"},
+      {t:"Advanced Order Tools",u:"https://www.bybit.com/en/help-center/article/Types-of-Orders-Available-on-Bybit"},
+      {t:"VIP Program",u:"https://www.bybit.com/en/vip/"},
+      {t:"OTC Services",u:"https://www.bybit.com/en/user/assets/otc/convert"}
+    ],
+    cta:"https://www.bybit.com/en/trading/trade-portal/?utm_source=header_trade_portal"
+  },
+  F: {
+    key:"Explorer", icon:"🔭", accent:"#A855F7", accentBg:"rgba(168,85,247,.10)",
+    tagline:"The next wave is already forming. You're early.",
+    desc:"You're drawn to emerging ecosystems, early-stage projects, and the edges of the crypto space — where the highest risk meets the highest reward. The narrative hasn't been priced in yet.",
+    learn:[
+      {t:"Tokenomics & project evaluation",u:"https://learn.bybit.com/en/article/47918"},
+      {t:"DeFi protocols & mechanics",u:"https://learn.bybit.com/defi/"},
+      {t:"NFT & Web3 infrastructure",u:"https://learn.bybit.com/nft/"},
+      {t:"On-chain analysis",u:"https://learn.bybit.com/en/article/29252"},
+      {t:"Ecosystem trends & narratives",u:"https://learn.bybit.com/crypto/"},
+      {t:"Launchpad guide",u:"https://learn.bybit.com/en/article/46134"}
+    ],
+    mistakes:["FOMO-ing into projects without research","Ignoring liquidity risk in small caps","Over-allocating to single early bets","Neglecting smart contract risks","Confusing narrative with fundamentals"],
+    products:[
+      {t:"Bybit Web3 Wallet",u:"https://www.bybit.com/en/web3/staking"},
+      {t:"Launchpad",u:"https://www.bybit.com/en/trade/spot/launchpad"},
+      {t:"Spot Trading",u:"https://www.bybit.com/en/trade/spot/BTCUSDT"}
+    ],
+    cta:"https://www.bybit.com/en/web3/staking"
+  },
+  G: {
+    key:"Conviction", icon:"💎", accent:"#FF9C2E", accentBg:"rgba(255,156,46,.10)",
+    tagline:"You own what you believe in. That's rare.",
+    desc:"You believe in the long-term thesis of select assets and prefer sovereign, self-directed accumulation over active trading. Less noise. More signal. The diamond hands don't shake.",
+    learn:[
+      {t:"Store of value thesis",u:"https://learn.bybit.com/en/article/46152"},
+      {t:"Macro & Bitcoin cycles",u:"https://learn.bybit.com/en/article/51271"},
+      {t:"Self-custody best practices",u:"https://learn.bybit.com/en/article/37343"},
+      {t:"Cold storage & security",u:"https://learn.bybit.com/en/article/2592"},
+      {t:"Long-term tax implications",u:"https://learn.bybit.com/en/article/19852"}
+    ],
+    mistakes:["Letting doubt shake long-term positions","Over-trading in and out of core holdings","Neglecting self-custody options","Ignoring security hygiene","Reacting to short-term FUD"],
+    products:[
+      {t:"Spot Trading — BTC/ETH",u:"https://www.bybit.com/en/trade/spot/BTCUSDT"},
+      {t:"Recurring Buy",u:"https://www.bybit.com/en/fiat/trade/invest/home?type=1&target=BTC&source=USDT"},
+      {t:"Easy Earn",u:"https://www.bybit.com/en/earn/easy-earn/"},
+      {t:"Wallet",u:"https://www.bybit.com/en/web3/staking"},
+      {t:"Hot vs Cold Wallet Guide",u:"https://learn.bybit.com/en/article/23209"}
+    ],
+    cta:"https://www.bybit.com/en/trade/spot/BTCUSDT"
+  },
+  H: {
+    key:"Sentinel", icon:"🛡️", accent:"#FF6B35", accentBg:"rgba(255,107,53,.10)",
+    tagline:"You know that protecting gains matters as much as making them.",
+    desc:"Capital preservation is your first priority. You think systematically about downside, hedging, and exposure management across all market conditions. The best offence is a good defence.",
+    learn:[
+      {t:"Options & futures hedging",u:"https://learn.bybit.com/en/derivatives"},
+      {t:"Options strategies with portfolio margin",u:"https://learn.bybit.com/en/options/top-options-trading-strategies-to-use-with-bybit-portfolio-margin"},
+      {t:"Structured products",u:"https://learn.bybit.com/en/article/42447"},
+      {t:"Adapting to varying volatility",u:"https://learn.bybit.com/en/article/14656"},
+      {t:"Correlation & diversification",u:"https://learn.bybit.com/en/article/47830"},
+      {t:"Drawdown management",u:"https://learn.bybit.com/en/article/28820"}
+    ],
+    mistakes:["Over-hedging and killing upside","Paying too much for protection","Ignoring counterparty risk on instruments","Under-hedging during calm markets","Treating hedges as profit strategies"],
+    products:[
+      {t:"Options Trading",u:"https://www.bybit.com/en/options-homepage"},
+      {t:"Perpetuals",u:"https://www.bybit.com/trade/usdt/BTCUSDT"},
+      {t:"Structured Products",u:"https://www.bybit.com/en/earn/structured-products/"},
+      {t:"Margin Trading",u:"https://www.bybit.com/en/trade/spot/BTC/USDT"},
+      {t:"Stable Earn",u:"https://www.bybit.com/en/earn/easy-earn/?homeRef=1"}
+    ],
+    cta:"https://www.bybit.com/en/options-homepage"
+  }
+};
+
+/* ── STATE ── */
+let phase = 'gateway';
+let selectedTrack = null;
+let gatewayAnswer = null;
+let trackAnswers = new Array(4).fill(null);
+let currentTrackQ = 0;
+let resultWinner = 'A';
+
+/* ── HELPERS ── */
+function totalSteps(){ return 5; }
+function currentStep(){
+  if(phase === 'gateway') return 1;
+  return 2 + currentTrackQ;
+}
+
+/* ── QUIZ START ── */
+function startQuiz(){
+  phase = 'gateway';
+  selectedTrack = null;
+  gatewayAnswer = null;
+  trackAnswers = new Array(4).fill(null);
+  currentTrackQ = 0;
+  showScreen('screen-quiz','right');
+  showMobileNav(true);
+  renderQuestion();
+}
+
+/* ── RENDER ── */
+function renderQuestion(){
+  const step = currentStep();
+  const total = totalSteps();
+
+  document.getElementById('q-num').textContent = 'Question ' + String(step).padStart(2,'0');
+  document.getElementById('progress-frac').textContent = step + ' / ' + total;
+
+  const dots = document.getElementById('step-dots');
+  dots.innerHTML = '';
+  for(let i=0;i<total;i++){
+    const d = document.createElement('div');
+    d.className = 'step-dot ' + (i<step-1?'done':i===step-1?'active':'pending');
+    dots.appendChild(d);
+  }
+
+  let q, selectedIdx;
+  if(phase === 'gateway'){
+    q = GATEWAY;
+    selectedIdx = gatewayAnswer;
+  } else {
+    q = TRACK_QUESTIONS[selectedTrack][currentTrackQ];
+    selectedIdx = trackAnswers[currentTrackQ];
+  }
+
+  document.getElementById('q-cat').textContent = q.category;
+  document.getElementById('q-text').textContent = q.text;
+
+  const container = document.getElementById('options');
+  container.innerHTML = '';
+  const badges = ['A','B','C','D'];
+  q.options.forEach((opt,i)=>{
+    const el = document.createElement('div');
+    el.className = 'option' + (selectedIdx===i?' selected':'');
+    const accent = phase==='gateway' ? '#FF9C2E' : (PROFILES[opt.profile]?.accent||'#FF9C2E');
+    el.innerHTML = `
+      <div class="option-badge">${badges[i]}</div>
+      <div class="option-label">${opt.text}</div>
+      <div class="option-check">
+        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+          <path d="M1 4l3 3 5-6" stroke="${accent}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>`;
+    el.addEventListener('click',()=>selectAnswer(i));
+    container.appendChild(el);
+  });
+
+  const isLast = phase==='track' && currentTrackQ===3;
+  const label = isLast ? 'See My Result →' : 'Next →';
+  [document.getElementById('btn-next'),document.getElementById('btn-next-m')].forEach(b=>{
+    if(b){ b.innerHTML=label; b.disabled=(selectedIdx===null); }
+  });
+
+  const showBack = !(phase==='gateway');
+  [document.getElementById('btn-back'),document.getElementById('btn-back-m')].forEach(b=>{
+    if(b) b.style.visibility = showBack?'visible':'hidden';
+  });
+}
+
+/* ── SELECT ── */
+function selectAnswer(index){
+  if(phase==='gateway'){
+    gatewayAnswer = index;
+  } else {
+    trackAnswers[currentTrackQ] = index;
+  }
+
+  document.querySelectorAll('.option').forEach((el,i)=>el.classList.toggle('selected',i===index));
+  [document.getElementById('btn-next'),document.getElementById('btn-next-m')].forEach(b=>{if(b)b.disabled=false;});
+
+  const isLast = phase==='track' && currentTrackQ===3;
+  if(!isLast) setTimeout(()=>goNext(), 340);
+}
+
+/* ── NAV ── */
+function goNext(){
+  if(phase==='gateway'){
+    if(gatewayAnswer===null) return;
+    selectedTrack = GATEWAY.options[gatewayAnswer].track;
+    phase = 'track';
+    currentTrackQ = 0;
+    animateQuestion('right');
+  } else {
+    if(trackAnswers[currentTrackQ]===null) return;
+    if(currentTrackQ < 3){
+      currentTrackQ++;
+      animateQuestion('right');
+    } else {
+      showMobileNav(false);
+      computeAndShowResult();
+    }
+  }
+}
+
+function goBack(){
+  if(phase==='track' && currentTrackQ===0){
+    phase='gateway';
+    animateQuestion('left');
+  } else if(phase==='track' && currentTrackQ>0){
+    currentTrackQ--;
+    animateQuestion('left');
+  }
+}
+
+function animateQuestion(dir){
+  const qc = document.getElementById('q-content');
+  qc.style.transition='opacity .15s,transform .15s';
+  qc.style.opacity='0';
+  qc.style.transform='translateX('+(dir==='right'?'-14px':'14px')+')';
+  setTimeout(()=>{
+    renderQuestion();
+    qc.style.transition='none';
+    qc.style.transform='translateX('+(dir==='right'?'14px':'-14px')+')';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      qc.style.transition='opacity .2s,transform .2s';
+      qc.style.opacity='1';
+      qc.style.transform='translateX(0)';
+    }));
+  },160);
+}
+
+/* ── RESULT ── */
+function computeAndShowResult(){
+  const qs = TRACK_QUESTIONS[selectedTrack];
+  const counts = {};
+  trackAnswers.forEach((ai,qi)=>{
+    if(ai!==null){
+      const prof = qs[qi].options[ai].profile;
+      counts[prof] = (counts[prof]||0)+1;
+    }
+  });
+
+  let winner = TIEBREAKERS[selectedTrack];
+  let max = 0;
+  for(const [k,v] of Object.entries(counts)){
+    if(v>max){ max=v; winner=k; }
+  }
+  resultWinner = winner;
+
+  const p = PROFILES[winner];
+
+  const wrap = document.getElementById('result-icon-wrap');
+  wrap.style.background = p.accentBg;
+  wrap.style.border = '1.5px solid '+p.accent+'40';
+  wrap.style.color = p.accent;
+  document.getElementById('result-icon').innerHTML = ICONS[winner];
+
+  const badge = document.getElementById('result-badge');
+  badge.textContent = 'Your Path';
+  badge.style.background = p.accentBg;
+  badge.style.color = p.accent;
+  badge.style.border = '1px solid '+p.accent+'40';
+
+  const nameEl = document.getElementById('result-name');
+  nameEl.textContent = p.key;
+  nameEl.style.color = p.accent;
+  document.getElementById('result-tagline').textContent = p.tagline;
+  document.getElementById('result-desc').textContent = p.desc;
+  document.getElementById('btn-cta').href = p.cta;
+
+  document.getElementById('result-grid').innerHTML =
+    makeCard('What to Learn', p.learn, p.accent, true) +
+    makeCard('Mistakes to Avoid', p.mistakes, '#AAAAAA', false) +
+    makeCard('Products for You', p.products, p.accent, true, p.accentBg, p.accent+'40');
+
+  showScreen('screen-result','right');
+}
+
+function makeCard(title, items, dotColor, isLinks=false, bg='', border=''){
+  const style=[];
+  if(bg) style.push('background:'+bg);
+  if(border) style.push('border-color:'+border);
+  const lis = items.map(item=>{
+    const text = isLinks ? item.t : item;
+    const content = (isLinks && item.u) ? `<a href="${item.u}" target="_blank" rel="noopener">${text}</a>` : text;
+    return `<li><span class="card-dot" style="background:${dotColor}"></span>${content}</li>`;
+  }).join('');
+  return `<div class="result-card" ${style.length?'style="'+style.join(';')+'"':''}>
+    <div class="card-heading">${title}</div>
+    <ul class="card-list">${lis}</ul>
+  </div>`;
+}
+
+/* ── PDF ── */
+function downloadPDF(){
+  const name = document.getElementById('pdf-name').value.trim();
+  const p = PROFILES[resultWinner];
+
+  document.getElementById('print-date').textContent = 'Crypto Learning Path · '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('print-greeting').textContent = name ? 'Prepared for '+name : '';
+  document.getElementById('print-profile-name').textContent = p.key;
+  document.getElementById('print-profile-name').style.color = p.accent;
+  document.getElementById('print-tagline').textContent = p.tagline;
+  document.getElementById('print-desc').textContent = p.desc;
+
+  document.getElementById('print-learn').innerHTML = p.learn.map(i=>`<li><span class="print-dot"></span><a href="${i.u}" style="color:inherit;text-decoration:underline;">${i.t}</a></li>`).join('');
+  document.getElementById('print-products').innerHTML = p.products.map(i=>`<li><span class="print-dot"></span><a href="${i.u}" style="color:inherit;text-decoration:underline;">${i.t}</a></li>`).join('');
+  document.getElementById('print-mistakes').innerHTML = p.mistakes.map(i=>`<li><span class="print-dot"></span>${i}</li>`).join('');
+
+  window.print();
+}
+
+/* ── UTILS ── */
+function retake(){
+  phase='gateway'; selectedTrack=null; gatewayAnswer=null;
+  trackAnswers=new Array(4).fill(null); currentTrackQ=0;
+  showMobileNav(false);
+  showScreen('screen-intro','left');
+}
+
+function showScreen(id, dir='right'){
+  document.querySelectorAll('.screen').forEach(s=>{
+    s.classList.remove('active','anim-fade','anim-slide-right','anim-slide-left');
+    s.style.display='none';
+  });
+  const el = document.getElementById(id);
+  el.style.display='block';
+  void el.offsetWidth;
+  el.classList.add('active');
+  if(id==='screen-intro'||id==='screen-result'){
+    el.classList.add('anim-fade');
+  } else {
+    el.classList.add(dir==='right'?'anim-slide-right':'anim-slide-left');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showMobileNav(visible){
+  const nav = document.getElementById('sticky-nav');
+  if(nav) nav.style.display = visible?'block':'none';
+}
+
+document.querySelectorAll('.screen').forEach(s=>{if(!s.classList.contains('active'))s.style.display='none';});
+document.getElementById('sticky-nav').style.display='none';
+</script>
+</body>
+</html>
