@@ -20,16 +20,15 @@ html{scroll-behavior:smooth}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:var(--black);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .brand-rule{height:3px;background:linear-gradient(90deg,var(--orange) 0%,#FFB84E 100%);width:100%}
 .header{padding:16px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid var(--g200);position:sticky;top:0;background:var(--white);z-index:20}
-.logo{font-size:17px;font-weight:800;letter-spacing:2px;color:var(--black);user-select:none}
-.logo span{color:var(--orange)}
+.logo-svg{display:block;height:26px;width:auto;user-select:none}
 .header-tag{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400)}
 .main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:52px 24px 120px}
 .container{width:100%;max-width:640px}
 .screen{display:none}
 .screen.active{display:block}
 .screen.anim-fade{animation:fadeUp .35s var(--ease-out) both}
-.screen.anim-slide-right{animation:slideRight .22s var(--ease-out) both}
-.screen.anim-slide-left{animation:slideLeft .22s var(--ease-out) both}
+.screen.anim-slide-right{animation:slideRight .35s var(--ease-out) both}
+.screen.anim-slide-left{animation:slideLeft .35s var(--ease-out) both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideRight{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
 @keyframes slideLeft{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:translateX(0)}}
@@ -53,14 +52,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:
 .btn-ghost:hover{color:var(--g800)}
 .btn-sm{font-size:13px;padding:10px 22px}
 .progress-area{margin-bottom:40px}
-.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.progress-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400)}
-.progress-frac{font-size:12px;font-weight:700;color:var(--orange)}
-.step-dots{display:flex;gap:5px;align-items:center}
-.step-dot{height:4px;border-radius:2px;transition:width .4s var(--ease),background .2s,opacity .2s;flex-shrink:0}
-.step-dot.done{width:16px;background:var(--orange);opacity:.45}
-.step-dot.active{width:32px;background:var(--orange);opacity:1}
-.step-dot.pending{width:16px;background:var(--g200)}
+.progress-bar-wrap{height:2px;background:var(--g100);border-radius:1px;overflow:hidden}
+.progress-bar-fill{height:100%;background:var(--orange);border-radius:1px;transition:width .5s cubic-bezier(.4,0,.2,1)}
 .q-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .q-num{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--orange)}
 .q-sep{width:1px;height:11px;background:var(--g200)}
@@ -81,9 +74,15 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:
 .nav-row{display:flex;justify-content:space-between;align-items:center;padding-top:4px}
 .sticky-nav{display:none}
 @media(max-width:560px){
-  .sticky-nav{display:block;position:fixed;bottom:0;left:0;right:0;padding:10px 20px 24px;background:linear-gradient(to top,var(--white) 70%,transparent);z-index:30}
+  body.in-quiz .sticky-nav{display:block;position:fixed;bottom:0;left:0;right:0;padding:12px 20px 28px;background:linear-gradient(to top,var(--white) 75%,transparent);z-index:30}
   .sticky-nav-inner{display:flex;gap:10px}
-  .nav-row{display:none}
+  body.in-quiz .nav-row{display:none}
+  .option{padding:20px 18px}
+  .q-text{font-size:19px}
+  .result-actions{flex-direction:column}
+  .result-actions .btn{width:100%;justify-content:center}
+  .download-row{flex-direction:column}
+  .download-input{min-width:0}
 }
 .result-hero{display:flex;align-items:flex-start;gap:22px;margin-bottom:28px}
 .result-icon-wrap{width:80px;height:80px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden}
@@ -101,8 +100,9 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:
 .card-list{list-style:none;display:flex;flex-direction:column;gap:8px}
 .card-list li{display:flex;align-items:flex-start;gap:7px;font-size:12px;font-weight:500;color:var(--g800);line-height:1.45}
 .card-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px}
-.card-list a{color:inherit;text-decoration:none;border-bottom:1px dashed var(--g200);transition:color .15s,border-color .15s}
-.card-list a:hover{color:var(--orange);border-color:var(--orange)}
+.card-list a{color:var(--orange);text-decoration:underline;text-decoration-color:rgba(255,156,46,.35);text-underline-offset:2px;transition:text-decoration-color .15s}
+.card-list a:hover{text-decoration-color:var(--orange)}
+.card-list a::after{content:' ↗';font-size:9px;opacity:.7}
 .result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px}
 .download-section{background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--radius-card);padding:24px;margin-top:4px}
 .download-title{font-size:16px;font-weight:700;color:var(--black);margin-bottom:6px}
@@ -118,8 +118,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:
   body>*:not(#print-area){display:none!important}
   #print-area{display:block!important;padding:48px 56px 40px;font-family:'Inter',sans-serif;color:#000;min-height:100vh;box-sizing:border-box;display:flex!important;flex-direction:column}
   .print-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:16px;border-bottom:3px solid #FF9C2E}
-  .print-logo{font-size:20px;font-weight:800;letter-spacing:2px}
-  .print-logo span{color:#FF9C2E}
+  .print-logo svg{display:block;height:28px;width:auto}
   .print-date{font-size:12px;color:#666}
   .print-hero{margin-bottom:28px}
   .print-profile-name{font-size:40px;font-weight:800;margin-bottom:6px}
@@ -147,7 +146,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:
 
 <div class="brand-rule"></div>
 <header class="header">
-  <div class="logo">BYB<span>I</span>T</div>
+  <svg class="logo-svg" viewBox="44 0 322 111" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M268.568 88.5358V0H285.853V88.5358H268.568Z" fill="#FF9C2E"/><path d="M44.936 110.672V22.1363H80.4992C97.7847 22.1363 107.858 31.8332 107.858 47.0056C107.858 56.8312 101.391 63.1703 96.9165 65.2833C102.263 67.7684 109.103 73.368 109.103 85.1779C109.103 101.715 97.7893 110.672 81.9967 110.672H44.936ZM79.1303 37.5522H62.2169V57.9475H79.1303C86.4662 57.9475 90.5728 53.8454 90.5728 47.7498C90.5728 41.6542 86.4708 37.5522 79.1303 37.5522ZM80.2511 73.492H62.2215V95.2516H80.2511C88.0831 95.2516 91.8177 90.2768 91.8177 84.3098C91.8177 78.3428 88.0877 73.492 80.2511 73.492Z" fill="black"/><path d="M155.388 74.3602V110.672H138.226V74.3602L111.616 22.1317H130.394L146.931 57.8188L163.22 22.1317H181.998L155.388 74.3602Z" fill="black"/><path d="M191.075 110.672V22.1363H226.638C243.923 22.1363 253.997 31.8332 253.997 47.0056C253.997 56.8312 247.529 63.1703 243.055 65.2833C248.402 67.7684 255.242 73.368 255.242 85.1779C255.242 101.715 243.928 110.672 228.135 110.672H191.075ZM225.269 37.5522H208.356V57.9475H225.269C232.605 57.9475 236.712 53.8454 236.712 47.7498C236.712 41.6542 232.61 37.5522 225.269 37.5522ZM226.39 73.492H208.36V95.2516H226.39C234.222 95.2516 237.956 90.2768 237.956 84.3098C237.956 78.3428 234.226 73.492 226.39 73.492Z" fill="black"/><path d="M341.463 37.5568V110.677H324.177V37.5568H301.049V22.1363H364.591V37.5568H341.463Z" fill="black"/></svg>
   <span class="header-tag">Crypto Profile Quiz</span>
 </header>
 
@@ -171,11 +170,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:
   <!-- QUIZ -->
   <div class="screen" id="screen-quiz">
     <div class="progress-area">
-      <div class="progress-top">
-        <span class="progress-label">Progress</span>
-        <span class="progress-frac" id="progress-frac">1 / 5</span>
-      </div>
-      <div class="step-dots" id="step-dots"></div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar" style="width:20%"></div></div>
     </div>
     <div id="q-content">
       <div class="q-meta">
@@ -213,8 +208,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:
     <div class="section-divider"></div>
     <div class="result-grid" id="result-grid"></div>
     <div class="result-actions">
-      <button class="btn btn-outline btn-sm" onclick="retake()">← Retake Quiz</button>
-      <a class="btn btn-primary btn-sm" id="btn-cta" href="#" target="_blank" rel="noopener">Start on Bybit →</a>
+      <a class="btn btn-primary" id="btn-cta" href="#" target="_blank" rel="noopener" style="flex:1;min-width:200px">Start on Bybit →</a>
+      <button class="btn btn-outline btn-sm" onclick="retake()">← Retake</button>
     </div>
     <div class="download-section">
       <div class="download-title">Download Your Learning Path</div>
@@ -231,7 +226,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:
 
 <div id="print-area">
   <div class="print-header">
-    <div class="print-logo">BYB<span>I</span>T</div>
+    <div class="print-logo"><svg viewBox="44 0 322 111" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M268.568 88.5358V0H285.853V88.5358H268.568Z" fill="#FF9C2E"/><path d="M44.936 110.672V22.1363H80.4992C97.7847 22.1363 107.858 31.8332 107.858 47.0056C107.858 56.8312 101.391 63.1703 96.9165 65.2833C102.263 67.7684 109.103 73.368 109.103 85.1779C109.103 101.715 97.7893 110.672 81.9967 110.672H44.936ZM79.1303 37.5522H62.2169V57.9475H79.1303C86.4662 57.9475 90.5728 53.8454 90.5728 47.7498C90.5728 41.6542 86.4708 37.5522 79.1303 37.5522ZM80.2511 73.492H62.2215V95.2516H80.2511C88.0831 95.2516 91.8177 90.2768 91.8177 84.3098C91.8177 78.3428 88.0877 73.492 80.2511 73.492Z" fill="black"/><path d="M155.388 74.3602V110.672H138.226V74.3602L111.616 22.1317H130.394L146.931 57.8188L163.22 22.1317H181.998L155.388 74.3602Z" fill="black"/><path d="M191.075 110.672V22.1363H226.638C243.923 22.1363 253.997 31.8332 253.997 47.0056C253.997 56.8312 247.529 63.1703 243.055 65.2833C248.402 67.7684 255.242 73.368 255.242 85.1779C255.242 101.715 243.928 110.672 228.135 110.672H191.075ZM225.269 37.5522H208.356V57.9475H225.269C232.605 57.9475 236.712 53.8454 236.712 47.7498C236.712 41.6542 232.61 37.5522 225.269 37.5522ZM226.39 73.492H208.36V95.2516H226.39C234.222 95.2516 237.956 90.2768 237.956 84.3098C237.956 78.3428 234.226 73.492 226.39 73.492Z" fill="black"/><path d="M341.463 37.5568V110.677H324.177V37.5568H301.049V22.1363H364.591V37.5568H341.463Z" fill="black"/></svg></div>
     <div class="print-date" id="print-date"></div>
   </div>
   <div class="print-hero">
@@ -256,7 +251,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:
 </div>
 
 <footer class="footer">
-  © 2025 Bybit · This quiz is for informational purposes only and does not constitute financial advice. Results reflect your stated preferences, not a guarantee of outcomes.
+  © 2026 Bybit · This quiz is for informational purposes only and does not constitute financial advice. Results reflect your stated preferences, not a guarantee of outcomes.
 </footer>
 
 <script>
@@ -562,8 +557,8 @@ function startQuiz(){
   gatewayAnswer = null;
   trackAnswers = new Array(4).fill(null);
   currentTrackQ = 0;
+  document.body.classList.add('in-quiz');
   showScreen('screen-quiz','right');
-  showMobileNav(true);
   renderQuestion();
 }
 
@@ -573,15 +568,8 @@ function renderQuestion(){
   const total = totalSteps();
 
   document.getElementById('q-num').textContent = 'Question ' + String(step).padStart(2,'0');
-  document.getElementById('progress-frac').textContent = step + ' / ' + total;
-
-  const dots = document.getElementById('step-dots');
-  dots.innerHTML = '';
-  for(let i=0;i<total;i++){
-    const d = document.createElement('div');
-    d.className = 'step-dot ' + (i<step-1?'done':i===step-1?'active':'pending');
-    dots.appendChild(d);
-  }
+  const bar = document.getElementById('progress-bar');
+  if(bar) bar.style.width = (step/total*100)+'%';
 
   let q, selectedIdx;
   if(phase === 'gateway'){
@@ -636,9 +624,6 @@ function selectAnswer(index){
 
   document.querySelectorAll('.option').forEach((el,i)=>el.classList.toggle('selected',i===index));
   [document.getElementById('btn-next'),document.getElementById('btn-next-m')].forEach(b=>{if(b)b.disabled=false;});
-
-  const isLast = phase==='track' && currentTrackQ===3;
-  if(!isLast) setTimeout(()=>goNext(), 340);
 }
 
 /* ── NAV ── */
@@ -655,7 +640,7 @@ function goNext(){
       currentTrackQ++;
       animateQuestion('right');
     } else {
-      showMobileNav(false);
+      document.body.classList.remove('in-quiz');
       computeAndShowResult();
     }
   }
@@ -673,19 +658,19 @@ function goBack(){
 
 function animateQuestion(dir){
   const qc = document.getElementById('q-content');
-  qc.style.transition='opacity .15s,transform .15s';
+  qc.style.transition='opacity .2s cubic-bezier(.4,0,1,1),transform .2s cubic-bezier(.4,0,1,1)';
   qc.style.opacity='0';
-  qc.style.transform='translateX('+(dir==='right'?'-14px':'14px')+')';
+  qc.style.transform='translateX('+(dir==='right'?'-18px':'18px')+')';
   setTimeout(()=>{
     renderQuestion();
     qc.style.transition='none';
-    qc.style.transform='translateX('+(dir==='right'?'14px':'-14px')+')';
+    qc.style.transform='translateX('+(dir==='right'?'18px':'-18px')+')';
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      qc.style.transition='opacity .2s,transform .2s';
+      qc.style.transition='opacity .3s cubic-bezier(0,0,.2,1),transform .3s cubic-bezier(0,0,.2,1)';
       qc.style.opacity='1';
       qc.style.transform='translateX(0)';
     }));
-  },160);
+  },200);
 }
 
 /* ── RESULT ── */
@@ -773,7 +758,7 @@ function downloadPDF(){
 function retake(){
   phase='gateway'; selectedTrack=null; gatewayAnswer=null;
   trackAnswers=new Array(4).fill(null); currentTrackQ=0;
-  showMobileNav(false);
+  document.body.classList.remove('in-quiz');
   showScreen('screen-intro','left');
 }
 
@@ -795,8 +780,7 @@ function showScreen(id, dir='right'){
 }
 
 function showMobileNav(visible){
-  const nav = document.getElementById('sticky-nav');
-  if(nav) nav.style.display = visible?'block':'none';
+  /* no-op — sticky nav now controlled via body.in-quiz CSS class */
 }
 
 document.querySelectorAll('.screen').forEach(s=>{if(!s.classList.contains('active'))s.style.display='none';});
