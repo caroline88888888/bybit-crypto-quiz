@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Find Your Crypto Path — Bybit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,7 +74,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--white);color:
 .nav-row{display:flex;justify-content:space-between;align-items:center;padding-top:4px}
 .sticky-nav{display:none}
 @media(max-width:560px){
-  .sticky-nav{position:fixed;bottom:0;left:0;right:0;padding:12px 20px 28px;background:linear-gradient(to top,var(--white) 75%,transparent);z-index:30}
+  .sticky-nav{display:block;position:fixed;bottom:0;left:0;right:0;padding:12px 20px calc(28px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--white) 75%,transparent);z-index:30}
   .sticky-nav-inner{display:flex;gap:10px}
   .nav-row{display:none}
   .option{padding:20px 18px}
@@ -782,12 +782,10 @@ function showScreen(id, dir='right'){
 function showMobileNav(visible){
   const nav = document.getElementById('sticky-nav');
   if(!nav) return;
-  if(visible){ nav.style.removeProperty('display'); }
-  else { nav.style.display='none'; }
+  nav.style.display = visible ? 'block' : 'none';
 }
 
 document.querySelectorAll('.screen').forEach(s=>{if(!s.classList.contains('active'))s.style.display='none';});
-document.getElementById('sticky-nav').style.display='none';
 </script>
 </body>
 </html>
